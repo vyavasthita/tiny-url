@@ -36,5 +36,21 @@ services:
       DS_LICENSE: accept
     volumes:
     - "./database/development/notebooks:/var/lib/datastax-studio"
+  url-shortner:
+    build:
+      context: .
+      dockerfile: app/Dockerfile.dev
+    container_name: url-shortner
+    ports:
+      - 5001:5001
+    depends_on:
+      cassandra-db-development:
+        condition: service_healthy
+    environment:
+      - BUILD_ENV=development
+    networks: 
+      - shortner-development
+    volumes:
+    - "./app:/app"
 networks:
   shortner-development:

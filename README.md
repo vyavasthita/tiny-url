@@ -30,3 +30,8 @@ Redirection: Given a short link, our system should be able to redirect the user 
 
 ## Non-functional requirements
 TBD
+
+# Python Packages installed
+fastapi
+uvicorn
+cassandra-driver
