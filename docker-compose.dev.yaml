@@ -1,0 +1,40 @@
+version: '3'
+services:
+  cassandra-db-development:
+    image: datastax/dse-server:6.0.2
+    container_name: cassandra-db-development
+    command: [-g -s -R -k]
+    user: root
+    ports:
+    - "9042:9042"
+    healthcheck:
+        test: ["CMD", "cqlsh", "-e", "describe keyspaces" ]
+        interval: 10s
+        timeout: 5s
+        retries: 60
+    networks: 
+      - shortner-development
+    environment:
+      DS_LICENSE: accept
+    cap_add:
+    - IPC_LOCK
+    ulimits:
+      memlock: -1
+    volumes:
+      - "./database/development/db:/var/lib/cassandra:rw"
+  cassandra-studio-db-development:
+    image: datastax/dse-studio:6.0.0
+    container_name: studio-db-development
+    ports:
+    - "9091:9091"
+    networks: 
+      - shortner-development
+    depends_on:
+      cassandra-db-development:
+        condition: service_healthy
+    environment:
+      DS_LICENSE: accept
+    volumes:
+    - "./database/development/notebooks:/var/lib/datastax-studio"
+networks:
+  shortner-development:
