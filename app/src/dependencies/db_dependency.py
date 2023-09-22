@@ -7,4 +7,4 @@ def get_db():
         session = cluster.connect()
         yield session
     finally:
-        session.close()
+        session.shutdown()

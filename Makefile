@@ -17,7 +17,9 @@ help:
 	@echo "  up		run containers"
 	@echo "  start		start containers"
 	@echo "  restart	restart containers"
+	@echo "  restartapp	restart app container"
 	@echo "  stop		stop containers"
+	@echo "  connect	Connect to app container"
 	@echo "  down		bring down containers"
 	@echo "  logs		show logs of containers"
 	@echo "  ps		show container status"
@@ -63,12 +65,15 @@ start: ## start containers
 restart: ## restart containers
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) stop
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) up -d
+.PHONY: restartapp
+restartapp: ## restart containers
+	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) restart url-shortner
 .PHONY: stop
 stop: ## stop containers
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) stop
 .PHONY: connect
 connect: ## connect
-	docker exec -it cassandra-db-development sh
+	docker exec -it url-shortner sh
 .PHONY: down
 down: ## bring down containers
 	docker compose down
