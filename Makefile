@@ -27,19 +27,19 @@ help:
 
 ifeq ($(BUILD_ENV),qa)
  $(info qa)
- ENV_FILE=configuration/qa/.env.app
+ ENV_FILE=app/configuration/qa/.env.app
  COMPOSE_FILE=docker-compose.qa.yaml
 else ifeq ($(BUILD_ENV), production)
 $(info production)
- ENV_FILE=configuration/production/.env.app
+ ENV_FILE=app/configuration/production/.env.app
  COMPOSE_FILE=docker-compose.prod.yaml
 else
  $(info development)
- ENV_FILE=configuration/development/.env.app
+ ENV_FILE=app/configuration/development/.env.app
  COMPOSE_FILE=docker-compose.dev.yaml
 endif
 
-TEST_ENV_FILE=configuration/.env.test
+TEST_ENV_FILE=app/configuration/.env.test
 
 test: test
 testcov: testcov
@@ -74,7 +74,7 @@ down: ## bring down containers
 	docker compose down
 .PHONY: logs
 logs: ## show logs of containers
-	docker compose logs
+	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) logs
 .PHONY: ps
 ps: ## show container status
 	docker ps -a
