@@ -16,6 +16,8 @@ services:
       - shortner-development
     environment:
       DS_LICENSE: accept
+      HEAP_NEWSIZE: 128M
+      MAX_HEAP_SIZE: 1024M
     cap_add:
     - IPC_LOCK
     ulimits:
