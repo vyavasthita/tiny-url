@@ -32,6 +32,10 @@ Redirection: Given a short link, our system should be able to redirect the user 
 TBD
 
 # Python Packages installed
+To Install package using poetry;-
+poetry add pydantic-settings --group core
+
 fastapi
 uvicorn
 cassandra-driver
+gunicorn
