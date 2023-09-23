@@ -24,6 +24,8 @@ class DevSettings(BaseSettings):
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     ALLOW_METHODS: List[str] = ["*"]
     ALLOW_HEADERS: List[str] = ["*"]
+    MAX_EXPIRES_IN_FOR_LOGGED_IN_USERS: int
+    MAX_EXPIRES_IN_FOR_NON_LOGGED_IN_USERS: int
 
     model_config = SettingsConfigDict(env_file=os.path.join(base_dir, ".env.app"))
 

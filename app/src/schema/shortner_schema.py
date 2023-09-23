@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from datetime import date
+from ..dependencies.config_dependency import Config
 
 
 class UrlBase(BaseModel):
@@ -7,7 +8,7 @@ class UrlBase(BaseModel):
 
 
 class ExpiresIn(BaseModel):
-    expires_in: int | None = Field(default=7, description="Expiry days", gt=0, lt=365)
+    expires_in: int | None = Field(default=7, description="Expiry days", gt=0, lt=Config().MAX_EXPIRES_IN_FOR_LOGGED_IN_USERS)
 
 
 class ExpiryDate(BaseModel):
