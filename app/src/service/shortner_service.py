@@ -9,11 +9,28 @@ from ..utils.key_gen import KeyGenerator
 from ..utils.datetime_utils import get_expiry_date
 
 
+class KeyGenService:
+    @classmethod
+    def check_short_url_exists(cls, short_url: str, session: Session) -> bool:
+        rows = shortner_dao.check_short_url_exists(short_url, session=session)
+
+        return len(rows.current_rows)
+
+    @classmethod
+    def generate_key(cls, session: Session):
+        hash_str = KeyGenerator.generate_key()
+
+        while cls.check_short_url_exists(hash_str, session):
+            hash_str = KeyGenerator.generate_key()
+
+        return hash_str
+
+
 class ShortnerService:
     @classmethod
     def check_long_url_exists(cls, url_info: UrlInfo, db_info: tuple) -> UrlInfo:
         url_info.short_url = db_info.short_url
-        url_info.expiry_date = db_info.expiry_date
+        url_info.expiry_date = db_info.expiry_date.date()
         url_info.is_active = db_info.is_active
 
         return url_info
@@ -22,7 +39,7 @@ class ShortnerService:
     def gen_new_short_url(
         cls, url_info: UrlInfo, long_url: LongUrl, session: Session
     ) -> UrlInfo:
-        hash_str = KeyGenerator.generate_key()
+        hash_str = KeyGenService.generate_key(session)
         expiry_date = get_expiry_date(long_url.expires_in)
 
         shortner_dao.create_url(

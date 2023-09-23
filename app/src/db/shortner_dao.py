@@ -7,13 +7,13 @@ from ..schema.shortner_schema import (
 
 def check_long_url_exists(long_url: str, session: Session) -> ResultSet:
     return session.execute(
-        f"select long_url, short_url from urlshortner.url where long_url='{long_url}';"
+        f"select * from urlshortner.url where long_url='{long_url}';"
     )
 
 
 def check_short_url_exists(short_url: str, session: Session) -> ResultSet:
     return session.execute(
-        f"select long_url, short_url from urlshortner.url where short_url='{short_url}';"
+        f"select * from urlshortner.url where short_url='{short_url}';"
     )
 
 
