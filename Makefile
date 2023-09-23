@@ -19,7 +19,8 @@ help:
 	@echo "  restart	restart containers"
 	@echo "  restartapp	restart app container"
 	@echo "  stop		stop containers"
-	@echo "  connect	Connect to app container"
+	@echo "  cdb		Connect to db container"
+	@echo "  capp		Connect to app container"
 	@echo "  down		bring down containers"
 	@echo "  logs		show logs of containers"
 	@echo "  ps		show container status"
@@ -71,8 +72,11 @@ restartapp: ## restart containers
 .PHONY: stop
 stop: ## stop containers
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) stop
-.PHONY: connect
-connect: ## connect
+.PHONY: cdb
+cdb: ## cdb
+	docker exec -it cassandra-db-development cqlsh
+.PHONY: capp
+capp: ## capp
 	docker exec -it url-shortner sh
 .PHONY: down
 down: ## bring down containers

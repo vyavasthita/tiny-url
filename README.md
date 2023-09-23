@@ -39,3 +39,11 @@ fastapi
 uvicorn
 cassandra-driver
 gunicorn
+email-validator
+python-multipart
+
+JWT Token; -
+python-jose[cryptography]
+
+Password Hashes; -
+passlib[bcrypt]

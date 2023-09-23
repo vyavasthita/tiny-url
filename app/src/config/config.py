@@ -15,6 +15,10 @@ class DevSettings(BaseSettings):
     LOGS_DIR: str
     # Log File name
     LOG_FILE_NAME: str
+    JWT_ALGORITHM: str | None
+    TOKEN_EXPIRY_TIME: int | None
+    SECRET_KEY: str | None
+    PASSWORD_LENGTH: int | None = 10
 
     model_config = SettingsConfigDict(env_file=os.path.join(base_dir, ".env.app"))
 
