@@ -19,13 +19,10 @@ def create_user(user: UserCreate, session: Session) -> User:
 
 
 def delete_user_by_email(user: User, session: Session) -> User:
-    return session.execute(
-        f"DELETE FROM urlshortner.user WHERE email='{user.email}';"
-    )
+    return session.execute(f"DELETE FROM urlshortner.user WHERE email='{user.email}';")
 
 
 def get_user_by_email(email: str, session: Session) -> User:
     return session.execute(
         f"select first_name, last_name, email, password from urlshortner.user where email='{email}';"
     )
-

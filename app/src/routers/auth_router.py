@@ -6,7 +6,7 @@ from ..service.auth_service import AuthService
 from ..dependencies.config_dependency import Config
 
 
-auth_router = APIRouter(prefix="/api/auth")
+auth_router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
 
 @auth_router.post("/token", tags=["Auth"], response_model=Token)

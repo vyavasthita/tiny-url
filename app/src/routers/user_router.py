@@ -40,6 +40,6 @@ def delete(
 
 @user_router.get("/me", response_model=UserRead)
 def me(
-    token: Annotated[str, Depends(get_auth_schema())], db: Session = Depends(get_db)
+    token: Annotated[str, Depends(get_auth_schema())], session: Session = Depends(get_db)
 ) -> UserRead:
-    return AuthService.get_current_user(token, db)
+    return AuthService.get_current_user(token, session)

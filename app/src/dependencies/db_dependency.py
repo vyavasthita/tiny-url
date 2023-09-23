@@ -17,6 +17,32 @@ def db_initialize(session: Session):
         """
     )
 
+    session.execute(
+        """
+            CREATE TABLE IF NOT EXISTS urlshortner.url(
+                long_url text,
+                short_url text PRIMARY KEY,
+                email text,
+                expiry_date date,
+                is_active boolean
+            )
+        """
+    )
+
+    session.execute(
+        """
+            CREATE INDEX IF NOT EXISTS long_url_index
+            ON urlshortner.url (long_url)
+        """
+    )
+
+    session.execute(
+        """
+            CREATE INDEX IF NOT EXISTS email_index
+            ON urlshortner.url (email)
+        """
+    )
+
 
 def get_db():
     try:

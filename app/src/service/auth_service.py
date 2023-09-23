@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
 from cassandra.cluster import Session
-from ..db import dao
+from ..db import user_dao
 from ..errors.auth_error import AuthException
 from ..schema.user_schema import DBUser as User
 from ..utils.security import create_access_token, decode_access_token
@@ -45,7 +45,7 @@ class AuthService:
 
     @classmethod
     def verify_user(cls, email: str, session: Session) -> User:
-        rows = dao.get_user_by_email(email=email, session=session)
+        rows = user_dao.get_user_by_email(email=email, session=session)
 
         if len(rows.current_rows) == 0:
             raise AuthException("User not found")
@@ -54,7 +54,7 @@ class AuthService:
 
     @classmethod
     def check_user(cls, email: str, session: Session) -> User:
-        return dao.get_user_by_email(email=email, session=session)
+        return user_dao.get_user_by_email(email=email, session=session)
 
     @classmethod
     def verify_password(cls, user: User, password: str) -> bool:

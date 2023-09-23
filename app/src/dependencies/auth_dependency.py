@@ -14,6 +14,10 @@ def get_auth_schema():
     return OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
 
+def get_auth_schema_optional():
+    return OAuth2PasswordBearer(tokenUrl="/api/auth/token", auto_error=False)
+
+
 class ValidateDuplicateUser:
     def __call__(
         self,

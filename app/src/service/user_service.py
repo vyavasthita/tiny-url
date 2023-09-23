@@ -4,7 +4,7 @@ from ..schema.user_schema import (
     UserCreate,
     UserRead,
 )
-from ..db import dao
+from ..db import user_dao
 from ..errors.db_error import DBException
 from ..utils.password_helper import PasswordHash
 from ..logging.api_logger import ApiLogger
@@ -14,7 +14,7 @@ class UserService:
     @classmethod
     def create_user(cls, user: UserCreate, db: Session) -> UserRead:
         user.password = PasswordHash.gen_hash_password(user.password)
-        results = dao.create_user(user, db)
+        results = user_dao.create_user(user, db)
 
         if not results[0].applied:
             raise DBException(
@@ -27,5 +27,5 @@ class UserService:
 
     @classmethod
     def delete_user(cls, user: User, db: Session) -> None:
-        dao.delete_user_by_email(user, db)
+        user_dao.delete_user_by_email(user, db)
 
