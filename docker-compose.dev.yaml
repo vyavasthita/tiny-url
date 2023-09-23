@@ -13,7 +13,7 @@ services:
         timeout: 5s
         retries: 60
     networks: 
-      - shortner-development
+      - shortner-development-network
     environment:
       CASSANDRA_CLUSTER_NAME: urlshortner-cluster
       CASSANDRA_DC: dc1
@@ -32,7 +32,7 @@ services:
     ports:
     - "9091:9091"
     networks: 
-      - shortner-development
+      - shortner-development-network
     depends_on:
       cassandra-db-development:
         condition: service_healthy
@@ -40,6 +40,18 @@ services:
       DS_LICENSE: accept
     volumes:
     - "./database/development/notebooks:/var/lib/datastax-studio"
+  redis:
+    image: redis:latest
+    container_name: redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    ports:
+      - "6380:6379"
+    networks:
+      - shortner-development-network
   url-shortner:
     build:
       context: .
@@ -50,13 +62,15 @@ services:
     depends_on:
       cassandra-db-development:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     env_file:
       - ./app/configuration/development/.env.app
     environment:
       - BUILD_ENV=development
     networks: 
-      - shortner-development
+      - shortner-development-network
     volumes:
     - "./app:/app"
 networks:
-  shortner-development:
+  shortner-development-network:

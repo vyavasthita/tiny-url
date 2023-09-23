@@ -52,3 +52,5 @@ python-jose[cryptography]
 
 Password Hashes; -
 passlib[bcrypt]
+fastapi-cache2
+redis

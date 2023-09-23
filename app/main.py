@@ -15,6 +15,10 @@ from src.routers.shortner_router import shortner_router
 from src.routers.user_router import user_router
 from src.utils.initialize import initialize
 from src.dependencies.config_dependency import Config
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+from redis import asyncio as aioredis
 
 
 app = FastAPI(
@@ -48,4 +52,7 @@ app.add_middleware(
 
 @app.on_event("startup")
 def start_up():
+    redis = aioredis.from_url("redis://localhost")
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+
     initialize()

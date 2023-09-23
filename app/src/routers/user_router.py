@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, status
+from fastapi_cache.decorator import cache
 from cassandra.cluster import Session
 from ..dependencies.db_dependency import get_db
 from ..dependencies.auth_dependency import (
@@ -39,6 +40,7 @@ def delete(
 
 
 @user_router.get("/me", response_model=UserRead)
+@cache()
 def me(
     token: Annotated[str, Depends(get_auth_schema())], session: Session = Depends(get_db)
 ) -> UserRead:
