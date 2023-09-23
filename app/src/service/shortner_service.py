@@ -7,6 +7,7 @@ from ..db import shortner_dao
 from ..logging.api_logger import ApiLogger
 from ..utils.key_gen import KeyGenerator
 from ..utils.datetime_utils import get_expiry_date
+from ..errors.shortner_error import ShortnerException
 
 
 class KeyGenService:
@@ -71,3 +72,26 @@ class ShortnerService:
             return cls.gen_new_short_url(
                 url_info=url_info, long_url=long_url, session=session
             )
+
+    @classmethod
+    def get_long_url(cls, short_url: str, session: Session):
+        # Check if given url already exists
+        rows = shortner_dao.get_long_url(short_url, session=session)
+
+        if len(rows.current_rows) == 0:
+            raise ShortnerException("Invalid URL Key")
+
+        if not rows[0].is_active:
+            raise ShortnerException("Expired")
+
+        return rows[0].long_url
+
+    @classmethod
+    def deactivate_url(cls, short_url: str, email: str, session: Session):
+        # Check if given url already exists
+        rows = shortner_dao.get_long_url_by_email(short_url, email, session=session)
+
+        if len(rows.current_rows) == 0:
+            raise ShortnerException("Invalid URL Key")
+
+        shortner_dao.deactivate_url(short_url, email, session)
