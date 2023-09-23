@@ -1,15 +1,17 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from src.errors.db_error import DBException, db_exception_handler
 from src.errors.auth_error import AuthException, auth_exception_handler
 from src.errors.user_error import (
     UserValidationException,
     user_validation_exception_handler,
 )
-
 from src.routers.auth_router import auth_router
 from src.routers.shortner_router import shortner_router
 from src.routers.user_router import user_router
 from src.utils.initialize import initialize
+from src.dependencies.config_dependency import Config
+
 
 app = FastAPI()
 
@@ -21,5 +23,13 @@ app.add_exception_handler(UserValidationException, user_validation_exception_han
 app.include_router(auth_router)
 app.include_router(shortner_router)
 app.include_router(user_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=Config().BACKEND_CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=Config().ALLOW_METHODS,
+    allow_headers=Config().ALLOW_HEADERS,
+)
 
 initialize()

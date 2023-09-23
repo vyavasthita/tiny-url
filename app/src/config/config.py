@@ -1,4 +1,6 @@
 import os
+from typing import List
+from pydantic import AnyHttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,6 +21,9 @@ class DevSettings(BaseSettings):
     TOKEN_EXPIRY_TIME: int | None
     SECRET_KEY: str | None
     PASSWORD_LENGTH: int | None = 10
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+    ALLOW_METHODS: List[str] = ["*"]
+    ALLOW_HEADERS: List[str] = ["*"]
 
     model_config = SettingsConfigDict(env_file=os.path.join(base_dir, ".env.app"))
 
