@@ -54,7 +54,7 @@ class AuthService:
 
     @classmethod
     def check_user(cls, email: str, session: Session) -> User:
-        return dao.get_user_by_email(email=email, session=session)[0]
+        return dao.get_user_by_email(email=email, session=session)
 
     @classmethod
     def verify_password(cls, user: User, password: str) -> bool:

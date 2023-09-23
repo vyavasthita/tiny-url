@@ -1,4 +1,4 @@
-from cassandra.cluster import Cluster, Session, DCAwareRoundRobinPolicy
+from cassandra.cluster import Cluster, Session
 
 
 def db_initialize(session: Session):

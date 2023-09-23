@@ -112,14 +112,6 @@ class UserPasswordUpdate(BaseModel):
 class UserRead(UserBase, UserName):
     pass
 
-
-class UserProfileUpdateRead(UserBase, UserProfileUpdate):
-    id: int
-
-    class Config:
-        from_attributes = True
-
-
 class DBUser(UserRead):
     class Config:
         from_attributes = True

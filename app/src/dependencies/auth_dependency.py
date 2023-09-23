@@ -7,7 +7,7 @@ from ..dependencies.db_dependency import get_db
 from ..service.auth_service import AuthService
 from ..errors.auth_error import AuthException
 from ..logging.api_logger import ApiLogger
-from ..schema.user_schema import UserBase, UserCreate, UserPasswordUpdate
+from ..schema.user_schema import UserCreate
 
 
 def get_auth_schema():
@@ -55,32 +55,6 @@ class ValidateToken:
     ):
         ApiLogger.log_info("Verifying token.")
         return AuthService.get_current_user(token=token, session=session)
-
-
-class ValidatePassword:
-    def __call__(
-        self,
-        token: Annotated[str, Depends(get_auth_schema())],
-        user_info: Annotated[UserPasswordUpdate, Body()],
-        session: Annotated[Session, Depends(get_db)],
-    ):
-        ApiLogger.log_info("Verifying token.")
-        user = AuthService.get_current_user(token=token, session=session)
-
-        if not AuthService.verify_password(user, user_info.existing_password):
-            raise AuthException("Invalid Existing Password")
-
-        return {"user": user, "password": user_info.new_password}
-
-
-class ValidatePasswordReset:
-    def __call__(
-        self,
-        user: Annotated[UserBase, Body()],
-        session: Annotated[Session, Depends(get_db)],
-    ):
-        ApiLogger.log_info(f"Verifying user with email '{user.email}'.")
-        return AuthService.verify_user(email=user.email, session=session)
 
 
 class ValidateDeleteAccount:

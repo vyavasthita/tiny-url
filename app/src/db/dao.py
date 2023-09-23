@@ -18,8 +18,10 @@ def create_user(user: UserCreate, session: Session) -> User:
     )
 
 
-def delete_user_by_id(user: User, db: Session) -> User:
-    pass
+def delete_user_by_email(user: User, session: Session) -> User:
+    return session.execute(
+        f"DELETE FROM urlshortner.user WHERE email='{user.email}';"
+    )
 
 
 def get_user_by_email(email: str, session: Session) -> User:
@@ -27,10 +29,3 @@ def get_user_by_email(email: str, session: Session) -> User:
         f"select first_name, last_name, email, password from urlshortner.user where email='{email}';"
     )
 
-
-def get_user_by_id(user_id: int, db: Session) -> User:
-    pass
-
-
-def update_user_password(user: User, password: str, db: Session) -> None:
-    pas
