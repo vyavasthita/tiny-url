@@ -26,6 +26,8 @@ class DevSettings(BaseSettings):
     ALLOW_HEADERS: List[str] = ["*"]
     MAX_EXPIRES_IN_FOR_LOGGED_IN_USERS: int
     MAX_EXPIRES_IN_FOR_NON_LOGGED_IN_USERS: int
+    CASSANDRA_HOST: str
+    CASSANDRA_KEYSPACE: str
 
     model_config = SettingsConfigDict(env_file=os.path.join(base_dir, ".env.app"))
 
@@ -49,5 +51,7 @@ class AutTestSettings(BaseSettings):
     ALLOW_HEADERS: List[str] = ["*"]
     MAX_EXPIRES_IN_FOR_LOGGED_IN_USERS: int
     MAX_EXPIRES_IN_FOR_NON_LOGGED_IN_USERS: int
+    CASSANDRA_HOST: str
+    CASSANDRA_KEYSPACE: str
 
     model_config = SettingsConfigDict(env_file=os.path.join(base_dir, ".env.test"))
