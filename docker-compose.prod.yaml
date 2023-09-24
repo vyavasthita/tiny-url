@@ -1,8 +1,8 @@
 version: '3'
 services:
-  cassandra-db-qa:
+  cassandra-db-production:
     image: datastax/dse-server:6.0.2
-    container_name: cassandra-db-qa
+    container_name: cassandra-db-production
     command: [-g -s -R -k]
     user: root
     ports:
@@ -13,7 +13,7 @@ services:
         timeout: 5s
         retries: 60
     networks: 
-      - shortner-qa-network
+      - shortner-production-network
     environment:
       CASSANDRA_CLUSTER_NAME: urlshortner-cluster
       CASSANDRA_DC: dc1
@@ -25,24 +25,24 @@ services:
     ulimits:
       memlock: -1
     volumes:
-      - "./database/qa/db:/var/lib/cassandra:rw"
-  cassandra-studio-db-qa:
+      - "./database/production/db:/var/lib/cassandra:rw"
+  cassandra-studio-db-production:
     image: datastax/dse-studio:6.0.0
-    container_name: studio-db-qa
+    container_name: studio-db-production
     ports:
     - "9091:9091"
     networks: 
-      - shortner-qa-network
+      - shortner-production-network
     depends_on:
-      cassandra-db-qa:
+      cassandra-db-production:
         condition: service_healthy
     environment:
       DS_LICENSE: accept
     volumes:
-    - "./database/qa/notebooks:/var/lib/datastax-studio"
-  redis-qa:
+    - "./database/production/notebooks:/var/lib/datastax-studio"
+  redis-production:
     image: redis:latest
-    container_name: redis-qa
+    container_name: redis-production
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 1s
@@ -51,26 +51,26 @@ services:
     ports:
       - "6380:6379"
     networks:
-      - shortner-qa-network
-  url-shortner-qa:
+      - shortner-production-network
+  url-shortner-production:
     build:
       context: .
-      dockerfile: app/Dockerfile.qa
-    container_name: url-shortner-qa
+      dockerfile: app/Dockerfile.prod
+    container_name: url-shortner-production
     ports:
       - 5001:5001
     depends_on:
-      cassandra-db-qa:
+      cassandra-db-production:
         condition: service_healthy
-      redis-qa:
+      redis-production:
         condition: service_healthy
     env_file:
-      - ./app/configuration/qa/.env.app
+      - ./app/configuration/production/.env.app
     environment:
-      - BUILD_ENV=qa
+      - BUILD_ENV=production
     networks: 
-      - shortner-qa-network
+      - shortner-production-network
     volumes:
     - "./app:/app"
 networks:
-  shortner-qa-network:
+  shortner-production-network:

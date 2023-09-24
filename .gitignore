@@ -161,8 +161,11 @@ cython_debug/
 
 database/development/*
 database/qa/*
+database/production/*
 
 app/configuration/development/.env.app
 app/configuration/development/.env.test
 app/configuration/qa/.env.app
 app/configuration/qa/.env.test
+app/configuration/production/.env.app
+app/configuration/production/.env.test
