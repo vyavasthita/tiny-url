@@ -7,7 +7,7 @@ RUN pip install poetry
 COPY ./app/pyproject.toml /tmp
 COPY ./app/poetry.lock /tmp
 
-RUN poetry export -f requirements.txt --only core --output requirements.txt --without-hashes
+RUN poetry export -f requirements.txt --only core --only aut-test --output requirements.txt --without-hashes
 
 FROM python:3.10-alpine3.18
 
@@ -37,6 +37,11 @@ COPY ./app/configuration/development/.env.app /app/.env.app
 COPY ./app/src /app/src
 
 COPY /app/main.py .
+
+# Copy files for unit tests
+COPY ./app/tests /app/tests
+COPY ./app/.coveragerc .
+COPY ./app/pytest.ini .
 
 COPY /app/start_gunicorn.sh .
 RUN chmod +x start_gunicorn.sh

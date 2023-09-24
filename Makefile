@@ -68,7 +68,7 @@ restart: ## restart containers
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) up -d
 .PHONY: restartapp
 restartapp: ## restart containers
-	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) restart url-shortner
+	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) restart url-shortner-development
 .PHONY: stop
 stop: ## stop containers
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) stop
@@ -77,7 +77,7 @@ cdb: ## cdb
 	docker exec -it cassandra-db-development cqlsh
 .PHONY: capp
 capp: ## capp
-	docker exec -it url-shortner sh
+	docker exec -it url-shortner-development sh
 .PHONY: down
 down: ## bring down containers
 	docker compose down
@@ -92,9 +92,9 @@ destroy: ## destroy containers
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) down -v
 .PHONY: test
 test: ## run unit tests
-	docker exec -e RUN_ENV=test backend-$(BUILD_ENV) pytest -v
+	docker exec -e RUN_ENV=test url-shortner-$(BUILD_ENV) pytest -v
 testv: ## run unit tests with standard output on console
-	docker exec -e RUN_ENV=test backend-$(BUILD_ENV) pytest -s
+	docker exec -e RUN_ENV=test url-shortner-$(BUILD_ENV) pytest -s
 .PHONY: testcov
 testcov: ## run unit tests overage report
-	docker exec -e RUN_ENV=test backend-$(BUILD_ENV) pytest --cov
+	docker exec -e RUN_ENV=test url-shortner-$(BUILD_ENV) pytest --cov

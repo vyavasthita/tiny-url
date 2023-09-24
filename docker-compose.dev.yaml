@@ -40,9 +40,9 @@ services:
       DS_LICENSE: accept
     volumes:
     - "./database/development/notebooks:/var/lib/datastax-studio"
-  redis:
+  redis-development:
     image: redis:latest
-    container_name: redis
+    container_name: redis-development
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 1s
@@ -52,17 +52,17 @@ services:
       - "6380:6379"
     networks:
       - shortner-development-network
-  url-shortner:
+  url-shortner-development:
     build:
       context: .
       dockerfile: app/Dockerfile.dev
-    container_name: url-shortner
+    container_name: url-shortner-development
     ports:
       - 5001:5001
     depends_on:
       cassandra-db-development:
         condition: service_healthy
-      redis:
+      redis-development:
         condition: service_healthy
     env_file:
       - ./app/configuration/development/.env.app

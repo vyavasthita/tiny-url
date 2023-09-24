@@ -1,5 +1,5 @@
 from typing import Annotated, Any
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import RedirectResponse
 from fastapi_cache.decorator import cache
 from cassandra.cluster import Session
@@ -15,7 +15,7 @@ from ..service.shortner_service import ShortnerService
 shortner_router = APIRouter(prefix="/api/url", tags=["Url"])
 
 
-@shortner_router.post("/")
+@shortner_router.post("/", status_code=status.HTTP_201_CREATED)
 def user_info(
     long_url: LongUrl,
     session: Annotated[Session, Depends(get_db)],
@@ -37,15 +37,14 @@ def user_info(
     return ShortnerService.shorten_url(long_url=long_url, email=email, session=session)
 
 
-@shortner_router.get("/{url_key}")
+@shortner_router.get("/{url_key}", status_code=status.HTTP_200_OK)
 @cache()
 def forward_to_target_url(url_key: str, session: Session = Depends(get_db)):
     url = ShortnerService.get_long_url(short_url=url_key, session=session)
     return RedirectResponse(url)
 
 
-@shortner_router.delete("/{url_key}", status_code=204)
-@cache()
+@shortner_router.delete("/{url_key}", status_code=status.HTTP_204_NO_CONTENT)
 def deactivate_url(
     token: Annotated[str, Depends(get_auth_schema())],
     url_key: str,
