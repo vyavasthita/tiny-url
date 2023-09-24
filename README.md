@@ -14,6 +14,7 @@
   </a>
 
   <h3 align="center">Url Shortner</h3>
+</div>
 
 <p align="right">(<a href="#readme-top">Back To Top</a>)</p>
 
