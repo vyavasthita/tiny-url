@@ -70,7 +70,5 @@ services:
       - BUILD_ENV=production
     networks: 
       - shortner-production-network
-    volumes:
-    - "./app:/app"
 networks:
   shortner-production-network:

@@ -70,7 +70,5 @@ services:
       - BUILD_ENV=development
     networks: 
       - shortner-development-network
-    volumes:
-    - "./app:/app"
 networks:
   shortner-development-network:
