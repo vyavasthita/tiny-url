@@ -3,12 +3,13 @@ from ..schema.user_schema import (
     DBUser as User,
     UserCreate,
 )
+from ..dependencies.config_dependency import Config
 
 
 def create_user(user: UserCreate, session: Session) -> User:
     stmt = session.prepare(
-        """
-        INSERT INTO urlshortner.user (first_name, last_name, email, password)
+        f"""
+        INSERT INTO {Config().CASSANDRA_KEYSPACE}.user (first_name, last_name, email, password)
         VALUES (?, ?, ?, ?)
         IF NOT EXISTS
         """
@@ -19,10 +20,10 @@ def create_user(user: UserCreate, session: Session) -> User:
 
 
 def delete_user_by_email(user: User, session: Session) -> User:
-    return session.execute(f"DELETE FROM urlshortner.user WHERE email='{user.email}';")
+    return session.execute(f"DELETE FROM {Config().CASSANDRA_KEYSPACE}.user WHERE email='{user.email}';")
 
 
 def get_user_by_email(email: str, session: Session) -> User:
     return session.execute(
-        f"select first_name, last_name, email, password from urlshortner.user where email='{email}';"
+        f"select first_name, last_name, email, password from {Config().CASSANDRA_KEYSPACE}.user where email='{email}';"
     )

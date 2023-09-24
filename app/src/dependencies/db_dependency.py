@@ -1,14 +1,18 @@
 from cassandra.cluster import Cluster, Session
+from ..dependencies.config_dependency import Config
 
 
 def db_initialize(session: Session):
+    keyspace_name = Config().CASSANDRA_KEYSPACE
+
     session.execute(
-        "CREATE KEYSPACE IF NOT EXISTS urlshortner WITH replication = {'class':'SimpleStrategy','replication_factor':'1'};"
+        f"CREATE KEYSPACE IF NOT EXISTS {keyspace_name}"
+        + " WITH replication = {'class':'SimpleStrategy','replication_factor':'1'};"
     )
 
     session.execute(
-        """
-            CREATE TABLE IF NOT EXISTS urlshortner.user(
+        f"""
+            CREATE TABLE IF NOT EXISTS {keyspace_name}.user(
                 first_name text,
                 last_name text,
                 email text PRIMARY KEY,
@@ -18,8 +22,8 @@ def db_initialize(session: Session):
     )
 
     session.execute(
-        """
-            CREATE TABLE IF NOT EXISTS urlshortner.url(
+        f"""
+            CREATE TABLE IF NOT EXISTS {keyspace_name}.url(
                 long_url text,
                 short_url text PRIMARY KEY,
                 email text,
@@ -30,16 +34,16 @@ def db_initialize(session: Session):
     )
 
     session.execute(
-        """
+        f"""
             CREATE INDEX IF NOT EXISTS long_url_index
-            ON urlshortner.url (long_url)
+            ON {keyspace_name}.url (long_url)
         """
     )
 
     session.execute(
-        """
+        f"""
             CREATE INDEX IF NOT EXISTS email_index
-            ON urlshortner.url (email)
+            ON {keyspace_name}.url (email)
         """
     )
 
@@ -48,7 +52,7 @@ def get_db():
     try:
         cluster = Cluster(
             contact_points=[
-                "cassandra-db-development",
+                Config().CASSANDRA_HOST,
             ]
         )
 
