@@ -1,9 +1,5 @@
 import os
-from typing import Annotated
-from fastapi import Depends
-from cassandra.cluster import Session
 from ..dependencies.config_dependency import Config
-from ..dependencies.db_dependency import get_db
 
 
 def create_log_directory():
