@@ -17,7 +17,6 @@ from src.utils.initialize import initialize
 from src.dependencies.config_dependency import Config
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
 from redis import asyncio as aioredis
 
 

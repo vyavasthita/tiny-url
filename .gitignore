@@ -160,5 +160,9 @@ cython_debug/
 #.idea/
 
 database/development/*
+database/qa/*
+
 app/configuration/development/.env.app
 app/configuration/development/.env.test
+app/configuration/qa/.env.app
+app/configuration/qa/.env.test

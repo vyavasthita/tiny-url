@@ -1,0 +1,76 @@
+version: '3'
+services:
+  cassandra-db-qa:
+    image: datastax/dse-server:6.0.2
+    container_name: cassandra-db-qa
+    command: [-g -s -R -k]
+    user: root
+    ports:
+    - "9042:9042"
+    healthcheck:
+        test: ["CMD", "cqlsh", "-e", "describe keyspaces" ]
+        interval: 10s
+        timeout: 5s
+        retries: 60
+    networks: 
+      - shortner-qa-network
+    environment:
+      CASSANDRA_CLUSTER_NAME: urlshortner-cluster
+      CASSANDRA_DC: dc1
+      DS_LICENSE: accept
+      HEAP_NEWSIZE: 128M
+      MAX_HEAP_SIZE: 1024M
+    cap_add:
+    - IPC_LOCK
+    ulimits:
+      memlock: -1
+    volumes:
+      - "./database/qa/db:/var/lib/cassandra:rw"
+  cassandra-studio-db-qa:
+    image: datastax/dse-studio:6.0.0
+    container_name: studio-db-qa
+    ports:
+    - "9091:9091"
+    networks: 
+      - shortner-qa-network
+    depends_on:
+      cassandra-db-qa:
+        condition: service_healthy
+    environment:
+      DS_LICENSE: accept
+    volumes:
+    - "./database/qa/notebooks:/var/lib/datastax-studio"
+  redis-qa:
+    image: redis:latest
+    container_name: redis-qa
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    ports:
+      - "6380:6379"
+    networks:
+      - shortner-qa-network
+  url-shortner-qa:
+    build:
+      context: .
+      dockerfile: app/Dockerfile.dev
+    container_name: url-shortner-qa
+    ports:
+      - 5001:5001
+    depends_on:
+      cassandra-db-qa:
+        condition: service_healthy
+      redis-qa:
+        condition: service_healthy
+    env_file:
+      - ./app/configuration/qa/.env.app
+    environment:
+      - BUILD_ENV=qa
+    networks: 
+      - shortner-qa-network
+    volumes:
+    - "./app:/app"
+networks:
+  shortner-qa-network:

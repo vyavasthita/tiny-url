@@ -74,10 +74,10 @@ stop: ## stop containers
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) stop
 .PHONY: cdb
 cdb: ## cdb
-	docker exec -it cassandra-db-development cqlsh
+	docker exec -it cassandra-db-$(BUILD_ENV) cqlsh
 .PHONY: capp
 capp: ## capp
-	docker exec -it url-shortner-development sh
+	docker exec -it url-shortner-$(BUILD_ENV) sh
 .PHONY: down
 down: ## bring down containers
 	docker compose down
