@@ -3,7 +3,7 @@ from ..schema.shortner_schema import (
     LongUrl,
     UrlInfo,
 )
-from ..db import shortner_dao
+from ..dao import shortner_dao
 from ..logging.api_logger import ApiLogger
 from ..utils.key_gen import KeyGenerator
 from ..utils.datetime_utils import get_expiry_date

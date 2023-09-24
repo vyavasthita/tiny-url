@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
 from cassandra.cluster import Session
-from ..db import user_dao
+from ..dao import user_dao
 from ..errors.auth_error import AuthException
 from ..schema.user_schema import DBUser as User
 from ..utils.security import create_access_token, decode_access_token

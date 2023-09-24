@@ -4,7 +4,7 @@ from ..schema.user_schema import (
     UserCreate,
     UserRead,
 )
-from ..db import user_dao
+from ..dao import user_dao
 from ..errors.db_error import DBException
 from ..utils.password_helper import PasswordHash
 from ..logging.api_logger import ApiLogger
@@ -28,4 +28,3 @@ class UserService:
     @classmethod
     def delete_user(cls, user: User, db: Session) -> None:
         user_dao.delete_user_by_email(user, db)
-
