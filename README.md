@@ -336,6 +336,74 @@ This will start 4 docker containers.
 - Cassandra Studio DB
 - Redis DB
 
+To Open URL Shortner App go to following url; -
+(This is FastAPI openapi client)
+
+http://127.0.0.1:5001/docs
+
+1. To Create New User
+Method: POST
+URL : http://127.0.0.1:5001/api/users
+Body: 
+{
+  "first_name": "string",
+  "last_name": "string",
+  "email": "string",
+  "password": "string",
+  "confirm_password": "string"
+}
+
+2. To Authenticate
+Method: POST
+URL : http://127.0.0.1:5001/api/auth/token
+Body: 
+{
+  "username": "string",
+  "password": "string"
+}
+
+3. To Delete User (self)
+Method: DELETE
+URL : http://127.0.0.1:5001/api/users
+
+Accept header must contain access token.
+
+Note: User must be authenticated before performing this operation.
+
+4. Self Information
+Method: GET
+URL : http://127.0.0.1:5001/api/users/me
+
+Accept header must contain access token.
+
+Note: User must be authenticated before performing this operation.
+
+5. To Create short url
+Method: POST
+URL : http://127.0.0.1:5001/api/url
+Body: 
+{
+  "expires_in": 7,
+  "target_url": "string"
+}
+
+6. Get long URL
+Method: GET
+URL : http://127.0.0.1:5001/api/url/{url_key}
+
+url_key: Path parameter containing short url.
+
+7. Delete/Inactive short URL
+Method: DELETE
+URL : http://127.0.0.1:5001/api/url/{url_key}
+
+url_key: Path parameter containing short url.
+
+Accept header must contain access token.
+
+Note: User must be authenticated before performing this operation.
+
+DB Access; -
 Go to following URL to see mysql database tables and data.
 
 ```bash
