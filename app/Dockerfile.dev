@@ -1,0 +1,49 @@
+FROM python:3.10-alpine3.18 as requirements-stage
+
+WORKDIR /tmp
+
+RUN pip install poetry
+
+COPY ./app/pyproject.toml /tmp
+COPY ./app/poetry.lock /tmp
+
+RUN poetry export -f requirements.txt --only core --only aut-test --output requirements.txt --without-hashes
+
+FROM python:3.10-alpine3.18
+
+WORKDIR /app
+
+# set environment variables
+# Prevents Python from writing pyc files to disc (equivalent to python -B option)
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# Prevents Python from buffering stdout and stderr (equivalent to python -u option)
+ENV PYTHONUNBUFFERED 1
+
+EXPOSE 5001
+
+ARG BUILD_ENV
+
+ENV BUILD_ENV=${BUILD_ENV}
+
+# Copy requirements from previous stage to docker container in /app 
+COPY --from=requirements-stage /tmp/requirements.txt /app/requirements.txt
+
+# Install the dependencies
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+
+COPY ./app/configuration/development/.env.app /app/.env.app
+
+COPY ./app/src /app/src
+
+COPY /app/main.py .
+
+# Copy files for unit tests
+COPY ./app/tests /app/tests
+COPY ./app/.coveragerc .
+COPY ./app/pytest.ini .
+
+COPY /app/start_gunicorn.sh .
+RUN chmod +x start_gunicorn.sh
+
+ENTRYPOINT [ "sh", "start_gunicorn.sh" ]

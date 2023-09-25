@@ -1,0 +1,74 @@
+version: '3'
+services:
+  cassandra-db-production:
+    image: datastax/dse-server:6.0.2
+    container_name: cassandra-db-production
+    command: [-g -s -R -k]
+    user: root
+    ports:
+    - "9042:9042"
+    healthcheck:
+        test: ["CMD", "cqlsh", "-e", "describe keyspaces" ]
+        interval: 10s
+        timeout: 5s
+        retries: 60
+    networks: 
+      - shortner-production-network
+    environment:
+      CASSANDRA_CLUSTER_NAME: urlshortner-cluster
+      CASSANDRA_DC: dc1
+      DS_LICENSE: accept
+      HEAP_NEWSIZE: 128M
+      MAX_HEAP_SIZE: 1024M
+    cap_add:
+    - IPC_LOCK
+    ulimits:
+      memlock: -1
+    volumes:
+      - "./database/production/db:/var/lib/cassandra:rw"
+  cassandra-studio-db-production:
+    image: datastax/dse-studio:6.0.0
+    container_name: studio-db-production
+    ports:
+    - "9091:9091"
+    networks: 
+      - shortner-production-network
+    depends_on:
+      cassandra-db-production:
+        condition: service_healthy
+    environment:
+      DS_LICENSE: accept
+    volumes:
+    - "./database/production/notebooks:/var/lib/datastax-studio"
+  redis-production:
+    image: redis:latest
+    container_name: redis-production
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    ports:
+      - "6380:6379"
+    networks:
+      - shortner-production-network
+  url-shortner-production:
+    build:
+      context: .
+      dockerfile: app/Dockerfile.prod
+    container_name: url-shortner-production
+    ports:
+      - 5001:5001
+    depends_on:
+      cassandra-db-production:
+        condition: service_healthy
+      redis-production:
+        condition: service_healthy
+    env_file:
+      - ./app/configuration/production/.env.app
+    environment:
+      - BUILD_ENV=production
+    networks: 
+      - shortner-production-network
+networks:
+  shortner-production-network:
